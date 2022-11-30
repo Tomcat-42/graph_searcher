@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "graph_searcher"
+version = "0.1.0"
+description = "A visual representation of search algorithms for graphs"
+authors = ["Pablo <pablohuggem@gmail.com>"]
+readme = "README.md"
+packages = [{include = "graph_searcher"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "^1.23.5"
+
+[tool.poetry.scripts]
+trabalho_1 = "graph_searcher.main:main"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
