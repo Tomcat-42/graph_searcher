@@ -1,15 +1,12 @@
-from trabalho_1.data_structures import Graph, GraphType, Queue, Stack
+from graph_searcher import DirectedGraph, Graph, UndirectedGraph
 
 
 def main():
-    n =5
-
-    graph = Graph(vertices=n, graph_type=GraphType.UNDIRECTED, weighted=False)
-
-    graph.add_edge(1, 2)
-    graph.add_edge(1, 3)
-    graph.add_edge(2, 4)
-    graph.add_edge(3, 4)
-    graph.add_edge(4, 4)
-
-    print(graph)
+    g = UndirectedGraph.from_dict({
+        "a": "b",
+        "b": "c",
+        "c": "d",
+        "d": "e",
+        "e": "f"
+    })
+    print(g)

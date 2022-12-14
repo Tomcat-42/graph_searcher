@@ -1,3 +1,3 @@
-from .graph import Graph, GraphType
-from .queue import Queue
-from .stack import Stack
+from .edge import Edge
+from .graph import DirectedGraph, Graph, UndirectedGraph
+from .vertex import DirectedVertex, UndirectedVertex, Vertex
