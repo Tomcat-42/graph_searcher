@@ -8,13 +8,13 @@ packages = [{include = "graph_searcher"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-numpy = "^1.23.5"
 matplotlib = "^3.6.2"
-spatial = "^0.2.0"
+numpy = "^1.23.5"
 spatialmath-python = "^1.0.3"
 
 [tool.poetry.scripts]
 main = "graph_searcher.main:main"
+graph_searcher = "graph_searcher.ui.cli.cli:main"
 
 
 [build-system]
