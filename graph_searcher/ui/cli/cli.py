@@ -1,6 +1,6 @@
 import argparse
 
-from graph_searcher.data_structures.graph import UndirectedGraph
+from graph_searcher.data_structures.graph import Graph
 
 from .json_file_action import JsonFileAction
 
@@ -65,17 +65,17 @@ class Cli:
         # pp(data
         nodes, edges = data["nodes"], data["edges"]
 
-        graph = UndirectedGraph()
+        graph = Graph(nodes, edges)
 
-        for name, geo in nodes.items():
-            graph.add_vertex(name=name, coord=geo["utm"])
-
-        for edge in edges:
-            graph.add_edge(edge["start"], edge["end"], cost=edge["distance"])
+        # for name, geo in nodes.items():
+        #     graph.add_vertex(name=name, coord=geo["utm"])
+        #
+        # for edge in edges:
+        #     graph.add_edge(edge["start"], edge["end"], cost=edge["distance"])
 
         [start, end] = self.args["path"]
 
-        path, length = graph.path_BFS(start, end)
+        path, length = graph.path_bfs(start, end)
 
         graph.plot(block=False)
         graph.highlight_path(path, block=True, alpha=0.5, scale=2)
