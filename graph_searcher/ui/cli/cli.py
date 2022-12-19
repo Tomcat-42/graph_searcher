@@ -53,7 +53,8 @@ class Cli:
         # which algorithm to use
         self.parser.add_argument(
             "--algorithm",
-            choices=["bfs", "dfs"],
+            "-a",
+            choices=["bfs", "sma"],
             default="bfs",
             help="Which algorithm to use for searching the graph",
         )
@@ -62,20 +63,17 @@ class Cli:
 
     def run(self):
         data = self.args["file"]
-        # pp(data
         nodes, edges = data["nodes"], data["edges"]
+        algorithm = self.args["algorithm"]
 
         graph = Graph(nodes, edges)
 
-        # for name, geo in nodes.items():
-        #     graph.add_vertex(name=name, coord=geo["utm"])
-        #
-        # for edge in edges:
-        #     graph.add_edge(edge["start"], edge["end"], cost=edge["distance"])
-
         [start, end] = self.args["path"]
 
-        path, length = graph.path_bfs(start, end)
+        if algorithm == "bfs":
+            path, length = graph.path_bfs(start, end)
+        else:
+            path, length, parents = graph.path_sma(start, end)
 
         graph.plot(block=False)
         graph.highlight_path(path, block=True, alpha=0.5, scale=2)

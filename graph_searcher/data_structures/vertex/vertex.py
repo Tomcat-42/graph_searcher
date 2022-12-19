@@ -1,6 +1,6 @@
 import numpy as np
 
-from ..edge import Edge
+from graph_searcher.data_structures.edge import Edge
 
 
 class Vertex:
@@ -35,13 +35,13 @@ class Vertex:
             return self.__class__(coord=self.coord, name=self.name)
 
     def neighbours(self):
-        return [e.next(self) for e in self._edgelist]
+        return [e.get_next_vertex(self) for e in self._edgelist]
 
     def isneighbour(self, vertex):
-        return vertex in [e.next(self) for e in self._edgelist]
+        return vertex in [e.get_next_vertex(self) for e in self._edgelist]
 
     def incidences(self):
-        return [(e.next(self), e) for e in self._edgelist]
+        return [(e.get_next_vertex(self), e) for e in self._edgelist]
 
     def _connect(self, dest, edge=None, cost=None, data=None):
 
@@ -85,12 +85,12 @@ class Vertex:
         return self._edgelist
 
     def heuristic_distance(self, v2):
-        return self._graph.heuristic(self.coord - v2.coord)
+        return np.linalg.norm(self.coord - v2.coord, 1)
 
     def distance(self, coord):
         if isinstance(coord, Vertex):
             coord = coord.coord
-        return self._graph.metric(self.coord - coord)
+        return np.linalg.norm(self.coord - coord, 1)
 
     @property
     def degree(self):

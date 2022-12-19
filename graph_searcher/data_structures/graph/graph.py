@@ -290,7 +290,7 @@ class Graph(ABC):
 
         return v1.label == v2.label
 
-    def path_bfs(self, S, G, verbose=False, summary=False):
+    def path_bfs(self, S, G):
         if isinstance(S, str):
             S = self[S]
         elif not isinstance(S, Vertex):
@@ -300,44 +300,28 @@ class Graph(ABC):
         elif not isinstance(S, Vertex):
             raise TypeError("goal must be Vertex subclass or string name")
 
-        # we use lists not sets since the order is instructive in verbose
-        # mode, really need ordered sets...
         frontier = [S]
         explored = []
         parent = {}
         done = False
 
         while frontier:
-            if verbose:
-                print()
-                print("FRONTIER:", ", ".join([v.name for v in frontier]))
-                print("EXPLORED:", ", ".join([v.name for v in explored]))
-
             x = frontier.pop(0)
-            if verbose:
-                print("   expand", x.name)
 
             # expand the vertex
             for n in x.neighbours():
                 if n is G:
-                    if verbose:
-                        print("     goal", n.name, "reached")
                     parent[n] = x
                     done = True
                     break
                 if n not in frontier and n not in explored:
                     # add it to the frontier
                     frontier.append(n)
-                    if verbose:
-                        print("      add", n.name, "to the frontier")
                     parent[n] = x
             if done:
                 break
             explored.append(x)
-            if verbose:
-                print("     move", x.name, "to the explored list")
         else:
-            # no path
             return None
 
         # reconstruct the path from start to goal
@@ -351,14 +335,9 @@ class Graph(ABC):
             path.insert(0, p)
             x = p
 
-        if summary or verbose:
-            print(
-                f"{len(explored)} vertices explored, {len(frontier)} remaining on the frontier"
-            )
-
         return path, length
 
-    def path_Astar(self, S, G, verbose=False, summary=False):
+    def path_sma(self, S, G):
         if isinstance(S, str):
             S = self[S]
         elif not isinstance(S, Vertex):
@@ -375,16 +354,8 @@ class Graph(ABC):
         f = {S: 0}  # evaluation function
 
         while frontier:
-            if verbose:
-                print()
-                print("FRONTIER:",
-                      ", ".join([f"{v.name}({f[v]:.0f})" for v in frontier]))
-                print("EXPLORED:", ", ".join([v.name for v in explored]))
-
             i = np.argmin([f[n] for n in frontier])  # minimum f in frontier
             x = frontier.pop(i)
-            if verbose:
-                print("   expand", x.name)
             if x is G:
                 break
             # expand the vertex
@@ -395,28 +366,19 @@ class Graph(ABC):
                     parent[n] = x
                     g[n] = g[x] + e.cost  # update cost to come
                     f[n] = g[n] + n.heuristic_distance(G)  # heuristic
-                    if verbose:
-                        print("      add", n.name, "to the frontier")
                 elif n in frontier:
                     # neighbour is already in the frontier
                     gnew = g[x] + e.cost
                     if gnew < g[n]:
                         # cost of path via x is lower that previous, reparent it
-                        if verbose:
-                            print(
-                                f" reparent {n.name}: cost {gnew} via {x.name} is less than cost {g[n]} via {parent[n].name}, change parent from {parent[n].name} to {x.name} "
-                            )
                         g[n] = gnew
                         f[n] = g[n] + n.heuristic_distance(G)  # heuristic
 
                         parent[n] = x  # reparent
 
             explored.append(x)
-            if verbose:
-                print("     move", x.name, "to the explored list")
 
         else:
-            # no path
             return None
 
         # reconstruct the path from start to goal
@@ -433,10 +395,5 @@ class Graph(ABC):
         parent_names = {}
         for v, p in parent.items():
             parent_names[v.name] = p.name
-
-        if summary or verbose:
-            print(
-                f"{len(explored)} vertices explored, {len(frontier)} remaining on the frontier"
-            )
 
         return path, length, parent_names
