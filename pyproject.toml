@@ -13,7 +13,6 @@ numpy = "^1.23.5"
 spatialmath-python = "^1.0.3"
 
 [tool.poetry.scripts]
-main = "graph_searcher.main:main"
 graph_searcher = "graph_searcher.ui.cli.cli:main"
 
 
