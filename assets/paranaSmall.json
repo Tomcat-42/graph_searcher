@@ -1,0 +1,33 @@
+{
+  "nodes": {
+    "Marechal Candido Rondon": {
+      "lat": -24.3322136,
+      "lon": 139.4619731,
+      "utm": [-266.1888714830168, 7288.1442884511625]
+    },
+    "Cascavel": {
+      "lat": -25.898889,
+      "lon": 139.351667,
+      "utm": [-267.4995506033434, 7113.050218941856]
+    },
+    "Curitiba": {
+      "lat": -27.4697707,
+      "lon": 153.0251235,
+      "utm": [1095.9145867144744, 6947.043658018596]
+    }
+  },
+  "edges": [
+    {
+      "start": "Marechal Candido Rondon",
+      "end": "Cascavel",
+      "distance": 188,
+      "speed": 100
+    },
+    {
+      "start": "Cascavel",
+      "end": "Curitiba",
+      "distance": 118,
+      "speed": 100
+    }
+  ]
+}
