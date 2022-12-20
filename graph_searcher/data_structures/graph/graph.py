@@ -321,7 +321,7 @@ class Graph(ABC):
         # fig.tight_layout()
 
         animation = camera.animate(interval=1000,
-                                   repeat=True,
+                                   repeat=False,
                                    repeat_delay=1000)
 
         plt.show()
@@ -473,11 +473,16 @@ class Graph(ABC):
         while frontier:
             i = np.argmin([f[n] for n in frontier])  # minimum f in frontier
             x = frontier.pop(i)
-            if (x is G) or (B > 0 and len(explored) > B):
+            explored.append(x)
+
+            if x is G:
                 break
+
+            if B > 0 and len(frontier) > B:
+                return explored, parents, [], 0
+
             # expand the vertex
             for n, e in x.incidences():
-
                 if n not in frontier and n not in explored:
                     # add it to the frontier
                     frontier.append(n)
@@ -494,7 +499,7 @@ class Graph(ABC):
 
                         parents[n] = x  # reparent
 
-            explored.append(x)
+            # explored.append(x)
 
         else:
             return None
