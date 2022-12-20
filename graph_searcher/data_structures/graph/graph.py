@@ -7,15 +7,15 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 from celluloid import Camera
-from spatialmath.base.graphics import axes_logic
 
 from ..edge import Edge
 from ..vertex import Vertex
 
 mpl.rcParams["toolbar"] = "None"
 mpl.rc("lines", linewidth=0.1)
-plt.style.use(["dark_background"])
+plt.rcParams["figure.autolayout"] = True
 
+plt.style.use(["dark_background"])
 plt.rcParams.update({
     "lines.color": "white",
     "patch.edgecolor": "white",
@@ -32,8 +32,9 @@ plt.rcParams.update({
     "savefig.edgecolor": "black",
 })
 
-fig = plt.figure()
+fig, ax = plt.subplots()
 fig.tight_layout()
+plt.margins(0.01)
 
 
 class Graph(ABC):
@@ -163,7 +164,12 @@ class Graph(ABC):
                 # for each component
                 for vertex in self.component(c):
                     if text is not False:
-                        plt.text(vertex.x, vertex.y, vertex.name, **text)
+                        plt.text(
+                            vertex.x,
+                            vertex.y,
+                            "   " + r"$\bf{" + vertex.name + r"}$",
+                            **text,
+                        )
                     if colorcomponents:
                         plt.plot(vertex.x, vertex.y, **vopt)
                         for v in vertex.neighbours():
@@ -176,7 +182,7 @@ class Graph(ABC):
                             plt.text(
                                 (vertex.x + v.x) / 2,
                                 (vertex.y + v.y) / 2,
-                                f"{e.cost:.1f}",
+                                r"$\it{" + f"{e.cost:.1f}" + r"}$",
                                 **text,
                             )
                     else:
@@ -195,8 +201,13 @@ class Graph(ABC):
                 # for each component
                 for vertex in self.component(c):
                     if text is not False:
-                        plt.text(vertex.x, vertex.y, vertex.z,
-                                 "  " + vertex.name, **text)
+                        plt.text(
+                            vertex.x,
+                            vertex.y,
+                            vertex.z,
+                            r"$\bf{" + vertex.name + r"}$",
+                            **text,
+                        )
                     if colorcomponents:
                         plt.plot(
                             vertex.x,
@@ -234,29 +245,43 @@ class Graph(ABC):
                        path,
                        explored,
                        parents,
+                       path_lenght,
                        block=False,
                        title="",
                        **kwargs):
+        # self.plot(block=True, vopt={"color": "red"}, eopt={"color": "red"})
         camera = Camera(fig)
-        animation = camera.animate(interval=100, repeat=True, repeat_delay=100)
-        self.plot(block=True, vopt={"color": "red"}, eopt={"color": "red"})
 
         plt.suptitle(title)
 
         for i in range(len(explored)):
             self.plot(block=True, vopt={"color": "red"}, eopt={"color": "red"})
+
             for j in range(i + 1):
                 try:
                     e = explored[j].edgeto(parents[explored[j]])
                     self.highlight_edge(e, color="yellow", **kwargs)
                 except KeyError:
                     pass
-                self.highlight_vertex(explored[i], color="yellow", **kwargs)
+                self.highlight_vertex(explored[j], color="yellow", **kwargs)
 
-            plt.title(
-                f"Total explored = {i}, Exploring = {explored[i].name}")
+            try:
+                e = explored[i].edgeto(parents[explored[i]])
+                ax.text(
+                    0,
+                    0,
+                    "Total explored = " + r"$\bf{" + str(i) + r"}$" +
+                    "\nGoing from " + r"$\bf{" + parents[explored[i]].name +
+                    r"}$" + " to " + r"$\bf{" + explored[i].name + r"}$" +
+                    " with cost " + r"$\bf{" + str(e.cost) + r"}$",
+                    transform=ax.transAxes,
+                )
+                self.highlight_edge(e, color="yellow", **kwargs)
+            except KeyError:
+                pass
             camera.snap()
 
+        cost = 0
         for i in range(len(path)):
             self.plot(block=False,
                       vopt={"color": "red"},
@@ -268,10 +293,37 @@ class Graph(ABC):
                 except KeyError:
                     pass
                 self.highlight_vertex(path[j], **kwargs, color="green")
-            camera.snap()
-            animation.pause()
 
-        fig.tight_layout()
+            try:
+                e = path[i].edgeto(parents[path[i]])
+                cost += e.cost
+                ax.text(
+                    0,
+                    0,
+                    f"Total cost = " + r"$\bf{" + str(cost) + r"}$" +
+                    f"\nPath = " + r"$\bf{" +
+                    f"{', '.join([v.name for v in path[:i+1]])}" + r"}$",
+                    transform=ax.transAxes,
+                )
+            except KeyError:
+                pass
+            camera.snap()
+            # animation.pause()
+
+        # self.plot(block=True, vopt={"color": "red"}, eopt={"color": "red"})
+        # ax.text(
+        #     0,
+        #     0,
+        #     f"Path found with cost [{path_lenght}], {[i.name for i in path]}",
+        #     transform=ax.transAxes,
+        # )
+
+        # fig.tight_layout()
+
+        animation = camera.animate(interval=1000,
+                                   repeat=True,
+                                   repeat_delay=1000)
+
         plt.show()
 
     def highlight_edge(self, edge, scale=1, color="r", alpha=0.5):
@@ -372,10 +424,9 @@ class Graph(ABC):
 
         while frontier:
             x = frontier.pop(0)
-
+            explored.append(x)
             # expand the vertex
             for n in x.neighbours():
-                explored.append(x)
                 if n is G:
                     parents[n] = x
                     explored.append(n)

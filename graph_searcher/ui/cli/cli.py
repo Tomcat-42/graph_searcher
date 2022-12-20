@@ -82,27 +82,30 @@ class Cli:
         [start, end] = self.args["path"]
 
         if algorithm == "bfs":
-            explored, parents, path, length = graph.path_bfs(
-                start, end)
+            explored, parents, path, length = graph.path_bfs(start, end)
         else:
             explored, parents, path, length = graph.path_sma(start, end, bound)
 
-        pp("explored")
-        pp(explored)
-        pp("parents")
-        pp(parents)
-        pp("path")
-        pp(path)
-        pp("length")
-        pp(length)
+        # pp("explored")
+        # pp(explored)
+        # pp("parents")
+        # pp(parents)
+        # pp("path")
+        # pp(path)
+        # pp("length")
+        # pp(length)
 
-        graph.highlight_path(path,
-                             explored,
-                             parents,
-                             block=True,
-                             alpha=1,
-                             scale=2,
-                             title=f"Searching path from {start} to {end} with {algorithm}")
+        graph.highlight_path(
+            path,
+            explored,
+            parents,
+            length,
+            block=True,
+            alpha=1,
+            scale=2,
+            title="Searching path from " + r"$\bf{" + start + r"}$" + " to " +
+            r"$\bf{" + end + r"}$" + " with " + r"$\bf{" + algorithm + r"}$",
+        )
 
 
 def main():
