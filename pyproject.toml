@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "graph_searcher"
-version = "0.1.0"
+version = "0.1.1"
 description = "A visual representation of search algorithms for graphs"
 authors = ["Pablo <pablohuggem@gmail.com>"]
 readme = "README.md"
@@ -8,10 +8,10 @@ packages = [{include = "graph_searcher"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-matplotlib = "^3.6.2"
-numpy = "^1.23.5"
-spatialmath-python = "^1.0.3"
-celluloid = "^0.2.0"
+matplotlib = "*"
+numpy = "*"
+spatialmath-python = "*"
+celluloid = "*"
 
 [tool.poetry.scripts]
 graph_searcher = "graph_searcher.ui.cli.cli:main"

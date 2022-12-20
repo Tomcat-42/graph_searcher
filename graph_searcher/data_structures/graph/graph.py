@@ -14,6 +14,7 @@ from ..vertex import Vertex
 mpl.rcParams["toolbar"] = "None"
 mpl.rc("lines", linewidth=0.1)
 plt.rcParams["figure.autolayout"] = True
+# change resolution for saved figure
 
 plt.style.use(["dark_background"])
 plt.rcParams.update({
@@ -97,17 +98,12 @@ class Graph(ABC):
             x.v2._connectivitychange = True
             self._connectivitychange = True
 
-            # remove references to the vertices
             x.v1 = None
             x.v2 = None
 
-            # remove from list of all edges
             self._edgelist.remove(x)
 
         elif isinstance(x, Vertex):
-            # remove a vertex
-
-            # remove all edges of this vertex
             for edge in copy.copy(x._edgelist):
                 self.remove(edge)
 
@@ -127,7 +123,7 @@ class Graph(ABC):
 
     @property
     def number_of_components(self):
-        self._graphcolor()
+        self.label_components()
         return self._ncomponents
 
     def closest(self, coord):
@@ -135,7 +131,7 @@ class Graph(ABC):
         min_which = None
 
         for vertex in self:
-            d = self.metric(vertex.coord - coord)
+            d = vertex.coord - coord
             if d < min_dist:
                 min_dist = d
                 min_which = vertex
@@ -148,114 +144,63 @@ class Graph(ABC):
     def plot(
         self,
         colorcomponents=True,
-        force2d=False,
         vopt={},
         eopt={},
         text={},
-        block=False,
-        grid=False,
     ):
         vopt = {**dict(marker="o", markersize=6), **vopt}
         eopt = {**dict(linewidth=0.5), **eopt}
 
-        if len(self[0].coord) == 2 or force2d:
-            # 2D plotting
-            for c in range(self.number_of_components):
-                # for each component
-                for vertex in self.component(c):
-                    if text is not False:
-                        plt.text(
-                            vertex.x,
-                            vertex.y,
-                            "   " + r"$\bf{" + vertex.name + r"}$",
-                            **text,
-                        )
-                    if colorcomponents:
-                        plt.plot(vertex.x, vertex.y, **vopt)
-                        for v in vertex.neighbours():
-                            plt.plot(
-                                [vertex.x, v.x],
-                                [vertex.y, v.y],
-                                **eopt,
-                            )
-                            e = vertex.edgeto(v)
-                            plt.text(
-                                (vertex.x + v.x) / 2,
-                                (vertex.y + v.y) / 2,
-                                r"$\it{" + f"{e.cost:.1f}" + r"}$",
-                                **text,
-                            )
-                    else:
-                        # plot all edges, with the cost as text between them
-                        plt.plot(vertex.x, vertex.y, **vopt)
-                        for v in vertex.neighbours():
-                            plt.plot([vertex.x, v.x], [vertex.y, v.y], **eopt)
-                            # plt.text(
-                            #     [vertex.x + v.x] / 2,
-                            #     [vertex.y + v.y] / 2,
-                            #     "yes",
-                            #     **text,
-                            # )
-        else:
-            for c in range(self.number_of_components):
-                # for each component
-                for vertex in self.component(c):
-                    if text is not False:
-                        plt.text(
-                            vertex.x,
-                            vertex.y,
-                            vertex.z,
-                            r"$\bf{" + vertex.name + r"}$",
-                            **text,
-                        )
-                    if colorcomponents:
+        # 2D plotting
+        for c in range(self.number_of_components):
+            # for each component
+            for vertex in self.component(c):
+                if text is not False:
+                    plt.text(
+                        vertex.x,
+                        vertex.y,
+                        "   " + r"$\bf{" + vertex.name + r"}$",
+                        **text,
+                    )
+                if colorcomponents:
+                    plt.plot(vertex.x, vertex.y, **vopt)
+                    for v in vertex.neighbours():
                         plt.plot(
-                            vertex.x,
-                            vertex.y,
-                            vertex.z,
-                            **{
-                                **dict(color=color[c, :]),
-                                **vopt
-                            },
+                            [vertex.x, v.x],
+                            [vertex.y, v.y],
+                            **eopt,
                         )
-                        for v in vertex.neighbours():
-                            plt.plot(
-                                [vertex.x, v.x],
-                                [vertex.y, v.y],
-                                [vertex.z, v.z],
-                                **{
-                                    **dict(color=color[c, :]),
-                                    **eopt
-                                },
-                            )
-                    else:
-                        plt.plot(vertex.x, vertex.y, **vopt)
-                        for v in vertex.neighbours():
-                            plt.plot(
-                                [vertex.x, v.x],
-                                [vertex.y, v.y],
-                                [vertex.z, v.z],
-                                **eopt,
-                            )
+                        e = vertex.edgeto(v)
+                        plt.text(
+                            (vertex.x + v.x) / 2,
+                            (vertex.y + v.y) / 2,
+                            r"$\it{" + f"{e.cost:.1f}" + r"}$",
+                            **text,
+                        )
+                else:
+                    # plot all edges, with the cost as text between them
+                    plt.plot(vertex.x, vertex.y, **vopt)
+                    for v in vertex.neighbours():
+                        plt.plot([vertex.x, v.x], [vertex.y, v.y], **eopt)
         plt.axis("off")
-        plt.grid(grid)
-        # plt.show(block=block)
 
-    def highlight_path(self,
-                       path,
-                       explored,
-                       parents,
-                       path_lenght,
-                       block=False,
-                       title="",
-                       **kwargs):
-        # self.plot(block=True, vopt={"color": "red"}, eopt={"color": "red"})
+    def highlight_path(
+        self,
+        path,
+        explored,
+        parents,
+        interval=1000,
+        title="Searching",
+        repeat=False,
+        output="",
+        **kwargs,
+    ):
         camera = Camera(fig)
 
         plt.suptitle(title)
 
         for i in range(len(explored)):
-            self.plot(block=True, vopt={"color": "red"}, eopt={"color": "red"})
+            self.plot(vopt={"color": "red"}, eopt={"color": "red"})
 
             for j in range(i + 1):
                 try:
@@ -283,9 +228,7 @@ class Graph(ABC):
 
         cost = 0
         for i in range(len(path)):
-            self.plot(block=False,
-                      vopt={"color": "red"},
-                      eopt={"color": "red"})
+            self.plot(vopt={"color": "red"}, eopt={"color": "red"})
             for j in range(i + 1):
                 try:
                     e = path[j].edgeto(parents[path[j]])
@@ -308,23 +251,20 @@ class Graph(ABC):
             except KeyError:
                 pass
             camera.snap()
-            # animation.pause()
 
-        # self.plot(block=True, vopt={"color": "red"}, eopt={"color": "red"})
-        # ax.text(
-        #     0,
-        #     0,
-        #     f"Path found with cost [{path_lenght}], {[i.name for i in path]}",
-        #     transform=ax.transAxes,
-        # )
+        animation = camera.animate(interval=interval,
+                                   repeat=repeat,
+                                   blit=True,
+                                   repeat_delay=interval)
 
-        # fig.tight_layout()
-
-        animation = camera.animate(interval=1000,
-                                   repeat=False,
-                                   repeat_delay=1000)
-
-        plt.show()
+        # if output is not empty string, save animation
+        if output != "":
+            fig.set_size_inches(19.2, 10.8)
+            plt.rcParams["figure.dpi"] = 480
+            animation.save(output)
+        else:
+            fig.tight_layout()
+            plt.show()
 
     def highlight_edge(self, edge, scale=1, color="r", alpha=0.5):
         p1 = edge.v1
@@ -353,23 +293,9 @@ class Graph(ABC):
                      markersize=6 * scale,
                      alpha=alpha)
 
-    def _graphcolor(self):
-        """
-        Color the graph
-
-        Performs a depth-first labeling operation, assigning the ``label``
-        attribute of every vertex with a sequential integer starting from 0.
-
-        This method checks the ``_connectivitychange`` attribute of all vertices
-        and if any are True it will perform the coloring operation. This flag
-        is set True by any operation that adds or removes a vertex or edge.
-
-        :seealso: :meth:`nc`
-        """
+    def label_components(self):
         if self._connectivitychange or any(
             [n._connectivitychange for n in self]):
-
-            # color the graph
 
             # clear all the labels
             for vertex in self:
@@ -399,11 +325,11 @@ class Graph(ABC):
             self._ncomponents = lastlabel + 1
 
     def component(self, c):
-        self._graphcolor()  # ensure labels are uptodate
+        self.label_components()  # ensure labels are uptodate
         return [v for v in self if v.label == c]
 
     def samecomponent(self, v1, v2):
-        self._graphcolor()
+        self.label_components()
 
         return v1.label == v2.label
 

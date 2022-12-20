@@ -12,15 +12,14 @@ class Cli:
         self.parser = argparse.ArgumentParser(
             prog="graph_searcher",
             description="Search a graph for a path between two nodes",
-            epilog="This is the end of the help message",
+            # epilog="This is the end of the help message",
         )
 
         self.parser.add_argument(
             "--verbose",
             "-v",
             help="increase output verbosity",
-            action="count",
-            default=0,
+            action="store_true",
         )
         self.parser.add_argument(
             "--version",
@@ -69,6 +68,28 @@ class Cli:
             help="Bound for SMA algorithm",
         )
 
+        self.parser.add_argument(
+            "--interval",
+            "-i",
+            type=int,
+            default=1000,
+            help="Animation Interval",
+        )
+
+        self.parser.add_argument(
+            "--repeat",
+            "-r",
+            action="store_true",
+            help="Repeat the animation",
+        )
+
+        self.parser.add_argument(
+            "--output",
+            "-o",
+            help="Output file",
+            default="",
+        )
+
         self.args = vars(self.parser.parse_args())
 
     def run(self):
@@ -76,6 +97,10 @@ class Cli:
         nodes, edges = data["nodes"], data["edges"]
         algorithm = self.args["algorithm"]
         bound = self.args["bound"]
+        interval = self.args["interval"]
+        repeat = self.args["repeat"]
+        output = self.args["output"]
+        verbose = self.args["verbose"]
 
         graph = Graph(nodes, edges)
 
@@ -86,31 +111,35 @@ class Cli:
         else:
             explored, parents, path, length = graph.path_sma(start, end, bound)
 
-        pp("explored")
-        pp(explored)
-        pp("parents")
-        pp(parents)
-        pp("path")
-        pp(path)
-        pp("length")
-        pp(length)
+        if verbose:
+            print("\nexplored nodes\n")
+            pp(explored)
+            print("\n\nparents nodes\n")
+            pp(parents)
+            print("\n\nshortest path nodes\n")
+            pp(path)
+            print(f"\n\nshortest path length:{length}\n")
 
         graph.highlight_path(
             path,
             explored,
             parents,
-            length,
-            block=True,
-            alpha=1,
-            scale=2,
+            interval=interval,
+            repeat=repeat,
+            output=output,
             title="Searching path from " + r"$\bf{" + start + r"}$" + " to " +
             r"$\bf{" + end + r"}$" + " with " + r"$\bf{" + algorithm + r"}$",
+            alpha=1,
+            scale=2,
         )
 
 
 def main():
     cli = Cli()
-    cli.run()
+    try:
+        cli.run()
+    except KeyboardInterrupt:
+        exit(1)
 
 
 if __name__ == "__main__":
