@@ -46,7 +46,7 @@ The `assets` folder contains some graphs for testing:
 graph_searcher --file ./assets/parana.json --path Cascavel Londrina -a sma -b 5
 ```
 
-![](./assets/parana_sma5.mp4)
+./assets/parana_sma5.mp4
 
 - **BFS algorithm on Paraná Graph**:
 
@@ -54,7 +54,7 @@ graph_searcher --file ./assets/parana.json --path Cascavel Londrina -a sma -b 5
 graph_searcher --file ./assets/parana.json --path Cascavel Londrina -a bfs
 ```
 
-![](./assets/parana_bfs.mp4)
+./assets/parana_bfs.mp4
 
 - **SMA\* (boundary=4) algorithm on example Graph**:
 
@@ -62,7 +62,7 @@ graph_searcher --file ./assets/parana.json --path Cascavel Londrina -a bfs
 graph_searcher --file ./assets/example.json --path n m -a sma -b 4
 ```
 
-![](./assets/example_sma4.mp4)
+./assets/example_sma4.mp4
 
 - **BFS algorithm on example Graph**:
 
@@ -70,7 +70,7 @@ graph_searcher --file ./assets/example.json --path n m -a sma -b 4
 graph_searcher --file ./assets/example.json --path n m -a bfs
 ```
 
-![](./assets/example_bfs.mp4)
+./assets/example_bfs.mp4
 
 
 ## colaborators
