@@ -1,4 +1,5 @@
 import argparse
+from pprint import pprint as pp
 
 from graph_searcher.data_structures.graph import Graph
 
@@ -71,12 +72,27 @@ class Cli:
         [start, end] = self.args["path"]
 
         if algorithm == "bfs":
-            path, length = graph.path_bfs(start, end)
+            explored, parents, path, length = graph.path_bfs(
+                start, end)
         else:
-            path, length, parents = graph.path_sma(start, end)
+            explored, parents, path, length = graph.path_bfs(start, end)
 
-        graph.plot(block=False)
-        graph.highlight_path(path, block=True, alpha=0.5, scale=2)
+        pp("explored")
+        pp(explored)
+        pp("parents")
+        pp(parents)
+        pp("path")
+        pp(path)
+        pp("length")
+        pp(length)
+
+        graph.highlight_path(path,
+                             explored,
+                             parents,
+                             block=True,
+                             alpha=1,
+                             scale=2,
+                             title=f"Searching path from {start} to {end} with {algorithm}")
 
 
 def main():

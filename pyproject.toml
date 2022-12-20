@@ -11,6 +11,7 @@ python = "^3.10"
 matplotlib = "^3.6.2"
 numpy = "^1.23.5"
 spatialmath-python = "^1.0.3"
+celluloid = "^0.2.0"
 
 [tool.poetry.scripts]
 graph_searcher = "graph_searcher.ui.cli.cli:main"
