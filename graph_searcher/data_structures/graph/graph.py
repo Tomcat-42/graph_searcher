@@ -3,12 +3,37 @@ from abc import ABC
 from collections.abc import Iterable
 from typing import Dict
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+from celluloid import Camera
 from spatialmath.base.graphics import axes_logic
 
 from ..edge import Edge
 from ..vertex import Vertex
+
+mpl.rcParams["toolbar"] = "None"
+mpl.rc("lines", linewidth=0.1)
+plt.style.use(["dark_background"])
+
+plt.rcParams.update({
+    "lines.color": "white",
+    "patch.edgecolor": "white",
+    "text.color": "#ffffff",
+    "axes.facecolor": "white",
+    "axes.edgecolor": "lightgray",
+    "axes.labelcolor": "white",
+    "xtick.color": "white",
+    "ytick.color": "white",
+    "grid.color": "lightgray",
+    "figure.facecolor": "black",
+    "figure.edgecolor": "black",
+    "savefig.facecolor": "black",
+    "savefig.edgecolor": "black",
+})
+
+fig = plt.figure()
+fig.tight_layout()
 
 
 class Graph(ABC):
@@ -127,50 +152,53 @@ class Graph(ABC):
         eopt={},
         text={},
         block=False,
-        grid=True,
-        ax=None,
+        grid=False,
     ):
-        vopt = {**dict(marker="o", markersize=12), **vopt}
-        eopt = {**dict(linewidth=3), **eopt}
-
-        if colorcomponents:
-            color = plt.cm.coolwarm(
-                np.linspace(0, 1, self.number_of_components))
+        vopt = {**dict(marker="o", markersize=6), **vopt}
+        eopt = {**dict(linewidth=0.5), **eopt}
 
         if len(self[0].coord) == 2 or force2d:
             # 2D plotting
-            if ax is None:
-                ax = axes_logic(ax, 2)
             for c in range(self.number_of_components):
                 # for each component
                 for vertex in self.component(c):
                     if text is not False:
-                        ax.text(vertex.x, vertex.y, "  " + vertex.name, **text)
+                        plt.text(vertex.x, vertex.y, vertex.name, **text)
                     if colorcomponents:
-                        ax.plot(vertex.x, vertex.y, color=color[c, :], **vopt)
+                        plt.plot(vertex.x, vertex.y, **vopt)
                         for v in vertex.neighbours():
-                            ax.plot(
+                            plt.plot(
                                 [vertex.x, v.x],
                                 [vertex.y, v.y],
-                                color=color[c, :],
                                 **eopt,
                             )
+                            e = vertex.edgeto(v)
+                            plt.text(
+                                (vertex.x + v.x) / 2,
+                                (vertex.y + v.y) / 2,
+                                f"{e.cost:.1f}",
+                                **text,
+                            )
                     else:
-                        ax.plot(vertex.x, vertex.y, **vopt)
+                        # plot all edges, with the cost as text between them
+                        plt.plot(vertex.x, vertex.y, **vopt)
                         for v in vertex.neighbours():
-                            ax.plot([vertex.x, v.x], [vertex.y, v.y], **eopt)
+                            plt.plot([vertex.x, v.x], [vertex.y, v.y], **eopt)
+                            # plt.text(
+                            #     [vertex.x + v.x] / 2,
+                            #     [vertex.y + v.y] / 2,
+                            #     "yes",
+                            #     **text,
+                            # )
         else:
-            # 3D or higher plotting, just do (x, y, z)
-            if ax is None:
-                ax = axes_logic(ax, 3)
             for c in range(self.number_of_components):
                 # for each component
                 for vertex in self.component(c):
                     if text is not False:
-                        ax.text(vertex.x, vertex.y, vertex.z,
-                                "  " + vertex.name, **text)
+                        plt.text(vertex.x, vertex.y, vertex.z,
+                                 "  " + vertex.name, **text)
                     if colorcomponents:
-                        ax.plot(
+                        plt.plot(
                             vertex.x,
                             vertex.y,
                             vertex.z,
@@ -180,7 +208,7 @@ class Graph(ABC):
                             },
                         )
                         for v in vertex.neighbours():
-                            ax.plot(
+                            plt.plot(
                                 [vertex.x, v.x],
                                 [vertex.y, v.y],
                                 [vertex.z, v.z],
@@ -190,34 +218,71 @@ class Graph(ABC):
                                 },
                             )
                     else:
-                        ax.plot(vertex.x, vertex.y, **vopt)
+                        plt.plot(vertex.x, vertex.y, **vopt)
                         for v in vertex.neighbours():
-                            ax.plot(
+                            plt.plot(
                                 [vertex.x, v.x],
                                 [vertex.y, v.y],
                                 [vertex.z, v.z],
                                 **eopt,
                             )
-        ax.grid(grid)
-        plt.show(block=block)
+        plt.axis("off")
+        plt.grid(grid)
+        # plt.show(block=block)
 
-    def highlight_path(self, path, block=False, **kwargs):
+    def highlight_path(self,
+                       path,
+                       explored,
+                       parents,
+                       block=False,
+                       title="",
+                       **kwargs):
+        camera = Camera(fig)
+        animation = camera.animate(interval=100, repeat=True, repeat_delay=100)
+        self.plot(block=True, vopt={"color": "red"}, eopt={"color": "red"})
+
+        plt.suptitle(title)
+
+        for i in range(len(explored)):
+            self.plot(block=True, vopt={"color": "red"}, eopt={"color": "red"})
+            for j in range(i + 1):
+                try:
+                    e = explored[j].edgeto(parents[explored[j]])
+                    self.highlight_edge(e, color="yellow", **kwargs)
+                except KeyError:
+                    pass
+                self.highlight_vertex(explored[i], color="yellow", **kwargs)
+
+            plt.title(
+                f"Total explored = {i}, Exploring = {explored[i].name}")
+            camera.snap()
+
         for i in range(len(path)):
-            if i < len(path) - 1:
-                e = path[i].edgeto(path[i + 1])
-                self.highlight_edge(e, **kwargs)
-            self.highlight_vertex(path[i], **kwargs)
-        plt.show(block=block)
+            self.plot(block=False,
+                      vopt={"color": "red"},
+                      eopt={"color": "red"})
+            for j in range(i + 1):
+                try:
+                    e = path[j].edgeto(parents[path[j]])
+                    self.highlight_edge(e, **kwargs, color="green")
+                except KeyError:
+                    pass
+                self.highlight_vertex(path[j], **kwargs, color="green")
+            camera.snap()
+            animation.pause()
 
-    def highlight_edge(self, edge, scale=2, color="r", alpha=0.5):
+        fig.tight_layout()
+        plt.show()
+
+    def highlight_edge(self, edge, scale=1, color="r", alpha=0.5):
         p1 = edge.v1
         p2 = edge.v2
         plt.plot([p1.x, p2.x], [p1.y, p2.y],
                  color=color,
-                 linewidth=3 * scale,
+                 linewidth=0.5 * scale,
                  alpha=alpha)
 
-    def highlight_vertex(self, vertex, scale=2, color="r", alpha=0.5):
+    def highlight_vertex(self, vertex, scale=1, color="r", alpha=0.5):
         if isinstance(vertex, Iterable):
             for n in vertex:
                 if isinstance(n, str):
@@ -226,14 +291,14 @@ class Graph(ABC):
                          n.y,
                          "o",
                          color=color,
-                         markersize=12 * scale,
+                         markersize=6 * scale,
                          alpha=alpha)
         else:
             plt.plot(vertex.x,
                      vertex.y,
                      "o",
                      color=color,
-                     markersize=12 * scale,
+                     markersize=6 * scale,
                      alpha=alpha)
 
     def _graphcolor(self):
@@ -302,7 +367,7 @@ class Graph(ABC):
 
         frontier = [S]
         explored = []
-        parent = {}
+        parents = {}
         done = False
 
         while frontier:
@@ -310,17 +375,18 @@ class Graph(ABC):
 
             # expand the vertex
             for n in x.neighbours():
+                explored.append(x)
                 if n is G:
-                    parent[n] = x
+                    parents[n] = x
+                    explored.append(n)
                     done = True
                     break
                 if n not in frontier and n not in explored:
                     # add it to the frontier
                     frontier.append(n)
-                    parent[n] = x
+                    parents[n] = x
             if done:
                 break
-            explored.append(x)
         else:
             return None
 
@@ -330,12 +396,12 @@ class Graph(ABC):
         length = 0
 
         while x is not S:
-            p = parent[x]
+            p = parents[x]
             length += x.edgeto(p).cost
             path.insert(0, p)
             x = p
 
-        return path, length
+        return explored, parents, path, length
 
     def path_sma(self, S, G):
         if isinstance(S, str):
@@ -349,7 +415,7 @@ class Graph(ABC):
 
         frontier = [S]
         explored = []
-        parent = {}
+        parents = {}
         g = {S: 0}  # cost to come
         f = {S: 0}  # evaluation function
 
@@ -363,7 +429,7 @@ class Graph(ABC):
                 if n not in frontier and n not in explored:
                     # add it to the frontier
                     frontier.append(n)
-                    parent[n] = x
+                    parents[n] = x
                     g[n] = g[x] + e.cost  # update cost to come
                     f[n] = g[n] + n.heuristic_distance(G)  # heuristic
                 elif n in frontier:
@@ -374,7 +440,7 @@ class Graph(ABC):
                         g[n] = gnew
                         f[n] = g[n] + n.heuristic_distance(G)  # heuristic
 
-                        parent[n] = x  # reparent
+                        parents[n] = x  # reparent
 
             explored.append(x)
 
@@ -387,13 +453,9 @@ class Graph(ABC):
         length = 0
 
         while x is not S:
-            p = parent[x]
+            p = parents[x]
             length += p.edgeto(x).cost
             path.insert(0, p)
             x = p
 
-        parent_names = {}
-        for v, p in parent.items():
-            parent_names[v.name] = p.name
-
-        return path, length, parent_names
+        return explored, parents, path, length

@@ -16,6 +16,21 @@ files = [
 colored = "*"
 
 [[package]]
+name = "celluloid"
+version = "0.2.0"
+description = "Easy matplotlib animation."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "celluloid-0.2.0-py3-none-any.whl", hash = "sha256:5cebd41276d9658f7667a2f1f565f566763a6110273b4af35c958b1407a9f277"},
+    {file = "celluloid-0.2.0.tar.gz", hash = "sha256:568b1512c4a97483759e9436c3f3e5dc5566da350179aa1872992ec8d82706e1"},
+]
+
+[package.dependencies]
+matplotlib = "*"
+
+[[package]]
 name = "colored"
 version = "1.4.4"
 description = "Simple library for color and formatting to terminal"
@@ -589,4 +604,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "2e80292e6a285a18919b0c74192ec5e70c3a5b2349c37e26dca14104c8f1cf0d"
+content-hash = "2d83257f234567c239c2b5ad751d3b1d0281bfbe1e545ac17fd69562bca6b468"
