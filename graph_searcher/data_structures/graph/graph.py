@@ -315,7 +315,7 @@ class Graph(ABC):
         :seealso: :meth:`nc`
         """
         if self._connectivitychange or any(
-            [n._connectivitychange for n in self]):
+                [n._connectivitychange for n in self]):
 
             # color the graph
 
@@ -403,7 +403,7 @@ class Graph(ABC):
 
         return explored, parents, path, length
 
-    def path_sma(self, S, G):
+    def path_sma(self, S, G, B=0):
         if isinstance(S, str):
             S = self[S]
         elif not isinstance(S, Vertex):
@@ -424,8 +424,11 @@ class Graph(ABC):
             x = frontier.pop(i)
             if x is G:
                 break
+            if B > 0 and len(explored) > B:
+                break
             # expand the vertex
             for n, e in x.incidences():
+
                 if n not in frontier and n not in explored:
                     # add it to the frontier
                     frontier.append(n)

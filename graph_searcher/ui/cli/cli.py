@@ -60,12 +60,22 @@ class Cli:
             help="Which algorithm to use for searching the graph",
         )
 
+        # SMA bound
+        self.parser.add_argument(
+            "--bound",
+            "-b",
+            type=int,
+            default=0,
+            help="Bound for SMA algorithm",
+        )
+
         self.args = vars(self.parser.parse_args())
 
     def run(self):
         data = self.args["file"]
         nodes, edges = data["nodes"], data["edges"]
         algorithm = self.args["algorithm"]
+        bound = self.args["bound"]
 
         graph = Graph(nodes, edges)
 
@@ -75,7 +85,7 @@ class Cli:
             explored, parents, path, length = graph.path_bfs(
                 start, end)
         else:
-            explored, parents, path, length = graph.path_bfs(start, end)
+            explored, parents, path, length = graph.path_sma(start, end, bound)
 
         pp("explored")
         pp(explored)
