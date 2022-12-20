@@ -1,6 +1,6 @@
 # graph searcher
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A graph search algorithms visualization tool.
@@ -93,6 +93,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <tr>
       <td align="center"><a href="https://github.com/Tomcat-42"><img src="https://avatars.githubusercontent.com/u/44649669?v=4?s=100" width="100px;" alt="Pablo Alessandro Santos Hugen"/><br /><sub><b>Pablo Alessandro Santos Hugen</b></sub></a><br /><a href="https://github.com/Tomcat-42/graph_searcher/commits?author=Tomcat-42" title="Code">💻</a> <a href="https://github.com/Tomcat-42/graph_searcher/commits?author=Tomcat-42" title="Documentation">📖</a> <a href="#ideas-Tomcat-42" title="Ideas, Planning, & Feedback">🤔</a> <a href="#research-Tomcat-42" title="Research">🔬</a></td>
       <td align="center"><a href="https://github.com/matheusnunesismael"><img src="https://avatars.githubusercontent.com/u/32654785?v=4?s=100" width="100px;" alt="Matheus Nunes Ismael"/><br /><sub><b>Matheus Nunes Ismael</b></sub></a><br /><a href="https://github.com/Tomcat-42/graph_searcher/commits?author=matheusnunesismael" title="Code">💻</a> <a href="https://github.com/Tomcat-42/graph_searcher/commits?author=matheusnunesismael" title="Documentation">📖</a> <a href="#ideas-matheusnunesismael" title="Ideas, Planning, & Feedback">🤔</a> <a href="#research-matheusnunesismael" title="Research">🔬</a></td>
+      <td align="center"><a href="https://github.com/AlessandraDosSantos"><img src="https://avatars.githubusercontent.com/u/66135957?v=4?s=100" width="100px;" alt="AlessandraDosSantos"/><br /><sub><b>AlessandraDosSantos</b></sub></a><br /><a href="https://github.com/Tomcat-42/graph_searcher/commits?author=AlessandraDosSantos" title="Code">💻</a> <a href="https://github.com/Tomcat-42/graph_searcher/commits?author=AlessandraDosSantos" title="Documentation">📖</a> <a href="#ideas-AlessandraDosSantos" title="Ideas, Planning, & Feedback">🤔</a> <a href="#research-AlessandraDosSantos" title="Research">🔬</a></td>
     </tr>
   </tbody>
 </table>
