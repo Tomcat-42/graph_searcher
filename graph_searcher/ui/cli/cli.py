@@ -86,14 +86,14 @@ class Cli:
         else:
             explored, parents, path, length = graph.path_sma(start, end, bound)
 
-        # pp("explored")
-        # pp(explored)
-        # pp("parents")
-        # pp(parents)
-        # pp("path")
-        # pp(path)
-        # pp("length")
-        # pp(length)
+        pp("explored")
+        pp(explored)
+        pp("parents")
+        pp(parents)
+        pp("path")
+        pp(path)
+        pp("length")
+        pp(length)
 
         graph.highlight_path(
             path,

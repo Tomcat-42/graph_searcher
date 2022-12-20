@@ -367,7 +367,7 @@ class Graph(ABC):
         :seealso: :meth:`nc`
         """
         if self._connectivitychange or any(
-                [n._connectivitychange for n in self]):
+            [n._connectivitychange for n in self]):
 
             # color the graph
 
@@ -473,9 +473,7 @@ class Graph(ABC):
         while frontier:
             i = np.argmin([f[n] for n in frontier])  # minimum f in frontier
             x = frontier.pop(i)
-            if x is G:
-                break
-            if B > 0 and len(explored) > B:
+            if (x is G) or (B > 0 and len(explored) > B):
                 break
             # expand the vertex
             for n, e in x.incidences():
