@@ -46,7 +46,8 @@ The `assets` folder contains some graphs for testing:
 graph_searcher --file ./assets/parana.json --path Cascavel Londrina -a sma -b 5
 ```
 
-https://raw.githubusercontent.com/Tomcat-42/graph_searcher/main/assets/parana_sma5.mp4
+https://user-images.githubusercontent.com/44649669/208787339-f90d841c-91df-4011-975d-b0f8760ae27e.mp4
+
 
 - **BFS algorithm on Paraná Graph**:
 
@@ -54,7 +55,7 @@ https://raw.githubusercontent.com/Tomcat-42/graph_searcher/main/assets/parana_sm
 graph_searcher --file ./assets/parana.json --path Cascavel Londrina -a bfs
 ```
 
-https://raw.githubusercontent.com/Tomcat-42/graph_searcher/main/assets/parana_bfs.mp4
+https://user-images.githubusercontent.com/44649669/208787516-8edfaeeb-8f4a-40d9-9828-808c6543caf2.mp4
 
 - **SMA\* (boundary=4) algorithm on example Graph**:
 
@@ -62,7 +63,8 @@ https://raw.githubusercontent.com/Tomcat-42/graph_searcher/main/assets/parana_bf
 graph_searcher --file ./assets/example.json --path n m -a sma -b 4
 ```
 
-https://raw.githubusercontent.com/Tomcat-42/graph_searcher/main/assets/example_sma4.mp4
+https://user-images.githubusercontent.com/44649669/208787598-bd7578c8-1cdf-4dfe-96c2-17c778845ee4.mp4
+
 
 - **BFS algorithm on example Graph**:
 
@@ -70,7 +72,8 @@ https://raw.githubusercontent.com/Tomcat-42/graph_searcher/main/assets/example_s
 graph_searcher --file ./assets/example.json --path n m -a bfs
 ```
 
-https://raw.githubusercontent.com/Tomcat-42/graph_searcher/main/assets/example_bfs.mp4
+https://user-images.githubusercontent.com/44649669/208787387-2f3a82cb-ea0f-4a67-bf66-7e64a367c38c.mp4
 
 
-## colaborators
+
+## Colaborators
