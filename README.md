@@ -78,9 +78,6 @@ graph_searcher --file ./assets/example.json --path n m -a bfs
 https://user-images.githubusercontent.com/44649669/208787387-2f3a82cb-ea0f-4a67-bf66-7e64a367c38c.mp4
 
 
-
-## Colaborators
-
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
